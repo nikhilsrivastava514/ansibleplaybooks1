@@ -1,0 +1,21 @@
+---
+-
+# target where you need to play the playbook
+  hosts: db1
+  vars:
+  mail_service:
+    - postfix 
+    - dovecot
+  tasks:
+    - name: with_items task
+        - yum:
+          name: "{{ item }}"
+          state: latest
+      with_items: "{{ mail_service }}"
+    - name: multiple user
+        user:
+          name: "{{ item.name }}"
+          state: present
+          groups: "{{ item.groups }}"
+        with_items:
+          - {name: "jane", groups: 'webhost'}

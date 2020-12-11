@@ -1,0 +1,37 @@
+---
+-
+# target where you need to play the playbook
+  hosts: db1
+
+  vars:
+    web_pkg: httpd
+    firewall_pkg: firewalld
+    perl_pkg: perl
+    rule: http
+    rule2: https
+    
+  tasks:
+    - name: install packages
+      yum:
+        name:
+              - "{{ web_pkg }}"
+              - "{{ firewall_pkg }}"
+              - "{{ perl_pkg }}"
+        state: latest
+    - name: start and enable firewalld servive
+      service:
+         name: "{{ firewall_pkg }}"
+         enabled: true
+         state: started
+    - name: Create Web content
+      copy:
+        content: "welcome to ansible autmation"
+        dest: /var/www/html/index.html
+    - name: open the port for the {{ rule }}
+      firewalld:
+                service: 
+                        - "{{ rule }}"
+                        - "{{ rule2 }}
+                permanent: true
+                immediate: true
+                state: enabled

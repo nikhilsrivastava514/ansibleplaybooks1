@@ -1,0 +1,14 @@
+34  ansible all -m command -a uptime
+   35  ansible all -m command -a "df -h"
+   36  ansible all -m command -a "free -m"
+   37  ansible all -m shell -a "free -m"
+   38  ansible all -m shell -a "cat /proc/meminfo|head -2"
+   39  ansible all -m file -a "path=/tmp/x state=directo mode=0755"
+   40  ansible all -m file -a "path=/tmp/x state=directory mode=0755"
+   41  history
+   42  ansible all -m file -a "path=/tmp/x state=absent mode=0755"
+   43  ansible all -m group -a "name=weblogic state=present"
+   44  ansible all -m user -a "name=weblogic group=weblogic createhome=yes"
+   45  ansible all -m file -a "path=/tmp/testfile state=touch mode=0755"
+   46  ansible all -m file -a "path=/tmp/testfile group=weblogic owner=weblogic"
+   47  history

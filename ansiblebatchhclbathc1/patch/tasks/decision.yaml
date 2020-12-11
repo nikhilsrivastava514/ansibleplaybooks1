@@ -1,0 +1,5 @@
+---
+- name: Decision Point to start patching
+  fail:
+     msg="{{ inventory_hostname }} having running application , please stop first then attempt patchin"
+  when: appr_proc_check.stdout = "process_running"
