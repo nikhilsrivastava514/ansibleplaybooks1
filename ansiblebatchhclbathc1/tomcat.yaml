@@ -1,0 +1,47 @@
+---
+- 
+# target where you need to play the playbook tomcat
+  hosts: db1
+  gather_facts: false
+  vars:
+    req_java: java-1.8.0-openjdk
+    set_java: jre-1.8.0-openjdk
+    req_tomcat_ver: 8.5.61
+    tomcat_url: http://mirrors.estointernet.in/apache/tomcat/tomcat-{{req_tomcat_ver.split('.')[0]}}/v{{req_tomcat_ver}}/bin/apache-tomcat-{{req_tomcat_ver}}.tar.gz
+    tomcat_port: 8090
+  tasks:
+    - name: create a custom fact directory
+      file:
+        path: /etc/ansible/facts.d
+        state: directory
+    - name: insert custom fact file
+      copy:
+        src: files/custom.fact
+        dest: /etc/ansible/facts.d/custom.fact
+    - name: Downloading required tomcat
+      debug: var=tomcat_url
+    - name: update the repo
+      yum:
+        name: "*"
+        state: latest
+    - name: we will install java
+      yum:
+        name: "{{ req_java }}"      
+        state: present
+    - name: set default path for your java
+      alternatives:
+        name: java
+        link: /usr/bin/java
+        path: /usr/lib/jvm/{{set_java}}/bin/java 
+    - name: Download required tomcat
+      get_url:
+        url: "{{ tomcat_url }}"
+        dest: /usr/local
+    - name: extract download the tomcat
+      unarchive:
+        src: "/usr/local/apache-tomcat-{{req_tomcat_ver}}.tar.gz" 
+        dest: /usr/local
+        remote_src: yes
+    - name: rename the tomcat home directory
+      command: mv /usr/local/apache-tomcat-{{req_tomcat_ver}} /usr/local/latest
+      
